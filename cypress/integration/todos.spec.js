@@ -2,7 +2,7 @@ describe('Todo Application', () => {
   beforeEach(function() {
     cy.fixture('todos/all.json').as('todos')
 
-    cy.server()
+    cy.server({ force404: true })
     // Alias the fixture data
     cy.route('/api/todos', '@todos').as('preload')
 
@@ -10,7 +10,7 @@ describe('Todo Application', () => {
     cy.wait('@preload')
   })
 
-  it('loads the page', function () {
+  it.only('loads the page', function () {
     cy.store('example.test.first').should('equal', 1)
 
     // Access the fixture data as this.todos
@@ -27,6 +27,12 @@ describe('Todo Application', () => {
       .should('have.class', 'completed')
       .find('.toggle')
       .should('be.checked')
+
+
+    cy.route('PUT', '/api/todos/1', 'ok').as('update')
+    cy.get('[data-cy=todo-label-1]').dblclick()
+    cy.get('[data-cy=todo-input-edit]').clear().type('Updated Todo{enter}')
+    cy.wait('@update')
   })
 
   context('Todo Creation Retries', function() {

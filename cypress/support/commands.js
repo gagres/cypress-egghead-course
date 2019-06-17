@@ -25,6 +25,24 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 const _ = require('lodash')
+const factories = require('../factories/factories');
+
+let generators = {};
+
+function *gen() {
+    let id = 0;
+
+    while(true) {
+        yield id += 1;
+        if (id > 100000) { id = 0 }
+    }
+}
+
+function resetGenerators() {
+    _.each(factories, (factory, key) => { generators[key] = gen() });
+}
+
+_.each(factories, (factory, key) => { generators[key] = gen() })
 
 Cypress.Commands.add("store", (str = '') => {
     let log = Cypress.log({ name: 'store' })
@@ -65,4 +83,38 @@ loMethods.forEach((loFn) => {
         return result
     })
 
+})
+
+Cypress.Commands.add('seed', (seeds, options={}) => {
+    let mappedSeeds = _.reduce(seeds, (output, seeds, key) => {
+        let factory = factories[key] || undefined;
+
+        if (_.isUndefined(factory)) {
+            output[key] = seeds;
+        } else {
+            output[key] = seeds.map((seed) => {
+                return _.defaults(seed, factory, {id: generators[key].next().value})
+            })
+        }
+
+        return output;
+    }, {})
+
+    if (options.log != false) {
+        Cypress.log({
+            name: 'seeds',
+            message: JSON.stringify(mappedSeeds),
+            consoleProps: () => {
+                return mappedSeeds;
+            }
+        })
+    }
+
+    cy.task('db:seed', mappedSeeds, {log: false});
+})
+
+// This is important to regenerate the database in each test
+beforeEach(() => {
+    cy.seed({ todos: [] })
+    resetGenerators();
 })

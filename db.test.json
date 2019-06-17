@@ -1,9 +1,14 @@
 {
   "todos": [
     {
-      "id": 1,
-      "text": "Seed the database",
-      "completed": false
+      "text": "Hello World",
+      "completed": false,
+      "id": 1
+    },
+    {
+      "text": "Hello World 2",
+      "completed": false,
+      "id": 2
     }
   ]
 }

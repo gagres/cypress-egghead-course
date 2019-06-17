@@ -124,16 +124,41 @@ describe('Todo Application', () => {
     })
 
     it.only('seeds the database', function() {
-      cy.task('db:seed', {todos: [{id: 1, text: 'Seed the database', completed: false}]})
+      cy.seed({todos: [{}, { text: 'Hello World 2' }]})
       cy.visit('/')
 
       cy.get('[data-cy=todo-item-1]')
-        .should('have.text', 'Seed the database')
+        .should('have.text', 'Hello World')
         .should('not.have.class', 'completed')
         .find('.toggle')
         .should('not.be.checked')
 
-      cy.get('[data-cy=todo-list]').its('length').should('equal', 1)
+      cy.get('[data-cy=todo-item-2]')
+        .should('have.text', 'Hello World 2')
+        .should('not.have.class', 'completed')
+        .find('.toggle')
+        .should('not.be.checked')
+
+      cy.get('[data-cy=todo-list]').children().its('length').should('equal', 2)
+    })
+
+    it.only('seeds the database', function() {
+      cy.seed({todos: [{}, { text: 'Hello World 2' }]})
+      cy.visit('/')
+
+      cy.get('[data-cy=todo-item-1]')
+        .should('have.text', 'Hello World')
+        .should('not.have.class', 'completed')
+        .find('.toggle')
+        .should('not.be.checked')
+
+      cy.get('[data-cy=todo-item-2]')
+        .should('have.text', 'Hello World 2')
+        .should('not.have.class', 'completed')
+        .find('.toggle')
+        .should('not.be.checked')
+
+      cy.get('[data-cy=todo-list]').children().its('length').should('equal', 2)
     })
   })
 })

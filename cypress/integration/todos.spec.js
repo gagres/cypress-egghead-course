@@ -106,6 +106,15 @@ describe('Todo Application', () => {
           completed: false
         })
     })
+  })
 
+  context.only('Full end-to-end testing', function() {
+    beforeEach(function() {
+      cy.visit('/')
+    })
+
+    it('performs a hello world', function() {
+      cy.task('hello', { name: 'Gabriel' });
+    })
   })
 })

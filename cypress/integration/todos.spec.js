@@ -40,7 +40,11 @@ describe('Todo Application', () => {
     cy.store('example.test.first').should('equal', 1)
 
     // Access the fixture data as this.todos
-    cy.store('todos').should('deep.equal', todos)
-
+    cy.store('todos')
+      .lo_find((todo) => todo.id == 1)
+      .lo_pick('text')
+      .should('deep.equal', {
+        text: '1st Todo'
+      })
   })
 })

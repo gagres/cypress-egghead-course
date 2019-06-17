@@ -17,7 +17,7 @@ describe('Todo Application', () => {
         cy.visit('/')
         cy.wait('@preload')
 
-        cy.window().its('store').invoke('getState').its('todos').should('deep.equal', [{
+        cy.store('todos').should('deep.equal', [{
             id: 1,
             text: 'Hello world',
             completed: false

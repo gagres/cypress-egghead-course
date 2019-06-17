@@ -118,5 +118,22 @@ describe('Todo Application', () => {
     it('performs a hello world', function() {
       cy.task('hello', {name: 'world'})
     })
+
+    it.only('seeds the database', function() {
+      cy.task('db:seed', {todos: [
+        {
+          "id": 1,
+          "text": "Hello world",
+          "completed": false
+        },
+        {
+          "id": 2,
+          "text": "Goodnight moon",
+          "completed": true
+        }
+      ]})
+
+      cy.visit('/');
+    })
   })
 })
